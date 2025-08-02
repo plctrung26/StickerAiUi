@@ -1,0 +1,86 @@
+/* Global responsive utilities */
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    overflow-x: hidden;
+}
+
+/* Responsive container utilities */
+.responsive-container {
+    width: 100%;
+    max-width: 100vw;
+    overflow-x: hidden;
+}
+
+/* Fix for potential layout issues */
+.page-wrapper {
+    min-height: 100vh;
+    width: 100%;
+    overflow-x: hidden;
+}
+
+/* Responsive grid utilities */
+.responsive-grid {
+    display: grid;
+    width: 100%;
+    gap: 1rem;
+}
+
+@media (max-width: 599px) {
+    .responsive-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (min-width: 600px) and (max-width: 959px) {
+    .responsive-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (min-width: 960px) {
+    .responsive-grid {
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    }
+}
+
+/* Responsive text utilities */
+@media (max-width: 599px) {
+    .responsive-title {
+        font-size: 1.5rem !important;
+    }
+
+    .responsive-subtitle {
+        font-size: 1.1rem !important;
+    }
+}
+
+/* Fix for Material-UI Container overflow */
+.MuiContainer-root {
+    overflow-x: hidden;
+}
+
+/* Responsive padding utilities */
+.responsive-padding {
+    padding: 1rem;
+}
+
+@media (min-width: 600px) {
+    .responsive-padding {
+        padding: 2rem;
+    }
+}
+
+@media (min-width: 960px) {
+    .responsive-padding {
+        padding: 3rem;
+    }
+}

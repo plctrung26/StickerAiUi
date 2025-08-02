@@ -1,13 +1,13 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { ThemeProvider, createTheme, CssBaseline, Box } from '@mui/material';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import HomePage from './pages/HomePage_modern';
-import LoginPage from './pages/LoginPage_modern';
-import GalleryPage from './pages/GalleryPage_modern';
-import ProfilePage from './pages/ProfilePage_modern';
-import CreatePage from './pages/CreatePage_modern';
+import HomePage from './pages/Home';
+import LoginPage from './pages/Login';
+import GalleryPage from './pages/Gallery';
+import ProfilePage from './pages/Profile';
+import CreatePage from './pages/Create';
 import PublicRoute from './components/PublicRoute';
-import DashboardPage from './pages/DashboardPage_modern';
+import DashboardPage from './pages/Dashboard';
 
 // Create Material UI theme
 const theme = createTheme({

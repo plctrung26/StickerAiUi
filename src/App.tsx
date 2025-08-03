@@ -1,6 +1,8 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-import { ThemeProvider, createTheme, CssBaseline, Box } from '@mui/material';
+import { CssBaseline } from '@mui/material';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { ThemeProvider } from './contexts/ThemeContext';
+import Layout from './components/Layout';
 import HomePage from './pages/Home';
 import LoginPage from './pages/Login';
 import GalleryPage from './pages/Gallery';
@@ -8,49 +10,6 @@ import ProfilePage from './pages/Profile';
 import CreatePage from './pages/Create';
 import PublicRoute from './components/PublicRoute';
 import DashboardPage from './pages/Dashboard';
-
-// Create Material UI theme
-const theme = createTheme({
-  palette: {
-    primary: {
-      main: '#667eea',
-      light: '#8b9ff7',
-      dark: '#4c63d2',
-    },
-    secondary: {
-      main: '#f093fb',
-      light: '#f5b3fc',
-      dark: '#d665e0',
-    },
-    background: {
-      default: '#ffffff',
-      paper: 'rgba(255, 255, 255, 0.9)',
-    },
-    success: {
-      main: '#10b981',
-    },
-    text: {
-      primary: '#1e293b',
-      secondary: '#64748b',
-    },
-  },
-  typography: {
-    fontFamily: '"Inter", "Segoe UI", "Roboto", sans-serif',
-    h1: {
-      fontWeight: 900,
-    },
-    h2: {
-      fontWeight: 800,
-    },
-    button: {
-      textTransform: 'none',
-      fontWeight: 600,
-    },
-  },
-  shape: {
-    borderRadius: 12,
-  },
-});
 
 // Create a client for React Query
 const queryClient = new QueryClient({
@@ -65,25 +24,47 @@ const queryClient = new QueryClient({
 function App() {
   return (
     <QueryClientProvider client={queryClient}>
-      <ThemeProvider theme={theme}>
+      <ThemeProvider>
         <CssBaseline />
         <Router>
-          <Box sx={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
-            <Routes>
-              <Route path="/" element={<HomePage />} />
-              <Route path="/home" element={<HomePage />} />
-              <Route path="/login" element={
-                <PublicRoute>
-                  <LoginPage />
-                </PublicRoute>
-              } />
-              <Route path="/gallery" element={<GalleryPage />} />
-              <Route path="/profile" element={<ProfilePage />} />
-              <Route path="/create" element={<CreatePage />} />
-              <Route path="/dashboard" element={<DashboardPage />} />
-              <Route path="*" element={<Navigate to="/" replace />} />
-            </Routes>
-          </Box>
+          <Routes>
+            <Route path="/" element={
+              <Layout>
+                <HomePage />
+              </Layout>
+            } />
+            <Route path="/home" element={
+              <Layout>
+                <HomePage />
+              </Layout>
+            } />
+            <Route path="/login" element={
+              <PublicRoute>
+                <LoginPage />
+              </PublicRoute>
+            } />
+            <Route path="/gallery" element={
+              <Layout>
+                <GalleryPage />
+              </Layout>
+            } />
+            <Route path="/profile" element={
+              <Layout>
+                <ProfilePage />
+              </Layout>
+            } />
+            <Route path="/create" element={
+              <Layout>
+                <CreatePage />
+              </Layout>
+            } />
+            <Route path="/dashboard" element={
+              <Layout>
+                <DashboardPage />
+              </Layout>
+            } />
+            <Route path="*" element={<Navigate to="/" replace />} />
+          </Routes>
         </Router>
       </ThemeProvider>
     </QueryClientProvider>

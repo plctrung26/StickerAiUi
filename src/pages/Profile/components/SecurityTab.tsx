@@ -26,12 +26,17 @@ const SecurityTab: React.FC<SecurityTabProps> = ({ onDeleteAccount }) => {
                     Vùng nguy hiểm
                 </Typography>
                 <Card sx={{
-                    border: '2px solid #fee2e2',
+                    border: '2px solid',
+                    borderColor: (theme) => theme.palette.mode === 'dark'
+                        ? 'rgba(244, 67, 54, 0.3)'
+                        : '#fee2e2',
                     borderRadius: '16px',
-                    background: 'rgba(254, 226, 226, 0.3)'
+                    background: (theme) => theme.palette.mode === 'dark'
+                        ? 'rgba(244, 67, 54, 0.05)'
+                        : 'rgba(254, 226, 226, 0.3)'
                 }}>
                     <CardContent>
-                        <Typography variant="h6" sx={{ fontWeight: 700, mb: 1 }}>
+                        <Typography variant="h6" sx={{ fontWeight: 700, mb: 1, color: 'text.primary' }}>
                             Xóa tài khoản
                         </Typography>
                         <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>

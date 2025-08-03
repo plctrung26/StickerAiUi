@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import {
     Container,
     Box,
@@ -6,14 +6,13 @@ import {
     Tabs,
     Tab,
 } from '@mui/material';
-import ProfileHeader from './components/ProfileHeader';
 import ProfileCard from './components/ProfileCard';
 import TabPanel from './components/TabPanel';
 import PersonalInfoTab from './components/PersonalInfoTab';
 import SecurityTab from './components/SecurityTab';
 import NotificationsTab from './components/NotificationsTab';
 import ThemeTab from './components/ThemeTab';
-import { useAuthStore } from '../../store/authStore';
+import { useAppStore } from '../../store/appStore';
 import {
     Person,
     Security,
@@ -22,13 +21,14 @@ import {
 } from '@mui/icons-material';
 
 const ProfilePage: React.FC = () => {
-    const { user } = useAuthStore();
-    const [currentTab, setCurrentTab] = useState(0);
-    const [editMode, setEditMode] = useState(false);
-    const [formData, setFormData] = useState({
-        fullName: user?.full_name || '',
-        email: user?.email || '',
-    });
+    const {
+        profileCurrentTab,
+        profileEditMode,
+        profileFormData,
+        setProfileCurrentTab,
+        setProfileEditMode,
+        setProfileFormData,
+    } = useAppStore();
 
     const handleDeleteAccount = () => {
         if (window.confirm('Bạn có chắc chắn muốn xóa tài khoản? Hành động này không thể hoàn tác.')) {
@@ -38,41 +38,50 @@ const ProfilePage: React.FC = () => {
     };
 
     const handleTabChange = (_event: React.SyntheticEvent, newValue: number) => {
-        setCurrentTab(newValue);
+        setProfileCurrentTab(newValue);
     };
 
     const handleSave = () => {
         // TODO: Implement save profile
-        setEditMode(false);
+        setProfileEditMode(false);
         alert('Thông tin đã được cập nhật!');
     };
 
     const handleEditToggle = () => {
-        if (editMode) {
+        if (profileEditMode) {
             handleSave();
         } else {
-            setEditMode(true);
+            setProfileEditMode(true);
         }
     };
 
     return (
-        <Box sx={{ minHeight: '100vh', background: 'linear-gradient(180deg, #f8fafc 0%, #ffffff 100%)' }}>
-            <ProfileHeader />
-
+        <Box sx={{
+            minHeight: '100vh',
+            background: (theme) => theme.palette.mode === 'dark'
+                ? 'linear-gradient(180deg, #0d1117 0%, #161b22 100%)'
+                : 'linear-gradient(180deg, #f8fafc 0%, #ffffff 100%)'
+        }}>
             <Container maxWidth="lg" sx={{ py: { xs: 3, md: 4 } }}>
-                <ProfileCard editMode={editMode} onEditToggle={handleEditToggle} />
+                <ProfileCard editMode={profileEditMode} onEditToggle={handleEditToggle} />
 
                 {/* Profile Tabs */}
                 <Paper sx={{
                     borderRadius: '20px',
-                    background: 'rgba(255, 255, 255, 0.9)',
+                    background: (theme) => theme.palette.mode === 'dark'
+                        ? 'rgba(22, 27, 34, 0.9)'
+                        : 'rgba(255, 255, 255, 0.9)',
                     backdropFilter: 'blur(10px)',
-                    border: '1px solid rgba(255, 255, 255, 0.2)',
-                    boxShadow: '0 8px 32px rgba(0, 0, 0, 0.1)',
+                    border: (theme) => theme.palette.mode === 'dark'
+                        ? '1px solid rgba(48, 54, 61, 0.3)'
+                        : '1px solid rgba(255, 255, 255, 0.2)',
+                    boxShadow: (theme) => theme.palette.mode === 'dark'
+                        ? '0 8px 32px rgba(0, 0, 0, 0.3)'
+                        : '0 8px 32px rgba(0, 0, 0, 0.1)',
                     overflow: 'hidden'
                 }}>
                     <Tabs
-                        value={currentTab}
+                        value={profileCurrentTab}
                         onChange={handleTabChange}
                         sx={{
                             px: 3,
@@ -100,25 +109,25 @@ const ProfilePage: React.FC = () => {
                         <Tab icon={<Palette />} label="Giao diện" />
                     </Tabs>
 
-                    <TabPanel value={currentTab} index={0}>
+                    <TabPanel value={profileCurrentTab} index={0}>
                         <PersonalInfoTab
-                            editMode={editMode}
-                            formData={formData}
-                            setFormData={setFormData}
+                            editMode={profileEditMode}
+                            formData={profileFormData}
+                            setFormData={setProfileFormData}
                             onSave={handleSave}
-                            setEditMode={setEditMode}
+                            setEditMode={setProfileEditMode}
                         />
                     </TabPanel>
 
-                    <TabPanel value={currentTab} index={1}>
+                    <TabPanel value={profileCurrentTab} index={1}>
                         <SecurityTab onDeleteAccount={handleDeleteAccount} />
                     </TabPanel>
 
-                    <TabPanel value={currentTab} index={2}>
+                    <TabPanel value={profileCurrentTab} index={2}>
                         <NotificationsTab />
                     </TabPanel>
 
-                    <TabPanel value={currentTab} index={3}>
+                    <TabPanel value={profileCurrentTab} index={3}>
                         <ThemeTab />
                     </TabPanel>
                 </Paper>

@@ -63,9 +63,13 @@ const CallToActionSection: React.FC = () => {
                         startIcon={<PhotoCamera />}
                         onClick={() => navigate('/create')}
                         sx={{
-                            background: 'rgba(255, 255, 255, 0.2)',
+                            background: (theme) => theme.palette.mode === 'dark'
+                                ? 'rgba(48, 54, 61, 0.5)'
+                                : 'rgba(255, 255, 255, 0.2)',
                             backdropFilter: 'blur(10px)',
-                            border: '1px solid rgba(255, 255, 255, 0.3)',
+                            border: (theme) => theme.palette.mode === 'dark'
+                                ? '1px solid rgba(48, 54, 61, 0.6)'
+                                : '1px solid rgba(255, 255, 255, 0.3)',
                             borderRadius: '16px',
                             py: 2,
                             px: 5,
@@ -74,7 +78,9 @@ const CallToActionSection: React.FC = () => {
                             textTransform: 'none',
                             color: 'white',
                             '&:hover': {
-                                background: 'rgba(255, 255, 255, 0.3)',
+                                background: (theme) => theme.palette.mode === 'dark'
+                                    ? 'rgba(58, 65, 73, 0.7)'
+                                    : 'rgba(255, 255, 255, 0.3)',
                                 transform: 'translateY(-2px)',
                                 boxShadow: '0 12px 40px rgba(0, 0, 0, 0.2)',
                             }
@@ -99,7 +105,9 @@ const CallToActionSection: React.FC = () => {
                             borderWidth: 2,
                             '&:hover': {
                                 borderColor: 'rgba(255, 255, 255, 0.6)',
-                                background: 'rgba(255, 255, 255, 0.1)',
+                                background: (theme) => theme.palette.mode === 'dark'
+                                    ? 'rgba(48, 54, 61, 0.3)'
+                                    : 'rgba(255, 255, 255, 0.1)',
                                 transform: 'translateY(-2px)',
                                 borderWidth: 2,
                             }

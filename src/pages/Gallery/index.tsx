@@ -1,10 +1,10 @@
-import React, { useState } from 'react';
+import React from 'react';
 import {
     Container,
     Typography,
     Box,
 } from '@mui/material';
-import GalleryHeader from './components/GalleryHeader';
+import { useAppStore } from '../../store/appStore';
 import SearchAndFilters from './components/SearchAndFilters';
 import StickerGrid from './components/StickerGrid';
 import FloatingActionButton from './components/FloatingActionButton';
@@ -21,10 +21,16 @@ interface StickerItem {
 }
 
 const GalleryPage: React.FC = () => {
-    const [searchQuery, setSearchQuery] = useState('');
-    const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
-    const [filterAnchor, setFilterAnchor] = useState<null | HTMLElement>(null);
-    const [selectedCategory, setSelectedCategory] = useState<string>('all');
+    const {
+        gallerySearchQuery,
+        galleryViewMode,
+        galleryFilterAnchor,
+        gallerySelectedCategory,
+        setGallerySearchQuery,
+        setGalleryViewMode,
+        setGalleryFilterAnchor,
+        setGallerySelectedCategory
+    } = useAppStore();
 
     // Mock data - replace with actual API call
     const stickerData: StickerItem[] = [
@@ -93,23 +99,26 @@ const GalleryPage: React.FC = () => {
     const categories = ['all', 'Animals', 'Tech', 'Emoji', 'Nature', 'Space'];
 
     const filteredStickers = stickerData.filter(sticker => {
-        const matchesSearch = sticker.title.toLowerCase().includes(searchQuery.toLowerCase());
-        const matchesCategory = selectedCategory === 'all' || sticker.category === selectedCategory;
+        const matchesSearch = sticker.title.toLowerCase().includes(gallerySearchQuery.toLowerCase());
+        const matchesCategory = gallerySelectedCategory === 'all' || sticker.category === gallerySelectedCategory;
         return matchesSearch && matchesCategory;
     });
 
     const handleFilterClick = (event: React.MouseEvent<HTMLElement>) => {
-        setFilterAnchor(event.currentTarget);
+        setGalleryFilterAnchor(event.currentTarget);
     };
 
     const handleFilterClose = () => {
-        setFilterAnchor(null);
+        setGalleryFilterAnchor(null);
     };
 
     return (
-        <Box sx={{ minHeight: '100vh', background: 'linear-gradient(180deg, #f8fafc 0%, #ffffff 100%)' }}>
-            <GalleryHeader />
-
+        <Box sx={{
+            minHeight: '100vh',
+            background: (theme) => theme.palette.mode === 'dark'
+                ? 'linear-gradient(180deg, #0d1117 0%, #161b22 100%)'
+                : 'linear-gradient(180deg, #f8fafc 0%, #ffffff 100%)'
+        }}>
             <Container maxWidth="xl" sx={{ py: { xs: 3, md: 4 } }}>
                 {/* Header Section */}
                 <Box sx={{ mb: 4 }}>
@@ -132,12 +141,12 @@ const GalleryPage: React.FC = () => {
                 </Box>
 
                 <SearchAndFilters
-                    searchQuery={searchQuery}
-                    setSearchQuery={setSearchQuery}
-                    viewMode={viewMode}
-                    setViewMode={setViewMode}
-                    selectedCategory={selectedCategory}
-                    setSelectedCategory={setSelectedCategory}
+                    searchQuery={gallerySearchQuery}
+                    setSearchQuery={setGallerySearchQuery}
+                    viewMode={galleryViewMode}
+                    setViewMode={setGalleryViewMode}
+                    selectedCategory={gallerySelectedCategory}
+                    setSelectedCategory={setGallerySelectedCategory}
                     onFilterClick={handleFilterClick}
                     categories={categories}
                 />
@@ -146,7 +155,7 @@ const GalleryPage: React.FC = () => {
             </Container>
 
             <FloatingActionButton
-                filterAnchor={filterAnchor}
+                filterAnchor={galleryFilterAnchor}
                 onFilterClose={handleFilterClose}
             />
         </Box>

@@ -1,21 +1,18 @@
 import React from 'react';
-import {
-    Box,
-    Button,
-    Typography,
-} from '@mui/material';
+import { Box } from '@mui/material';
 import { ArrowBack } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
+import { BaseTypography, BaseButton } from '../../../components/patterns';
 
 const LoginFooter: React.FC = () => {
     const navigate = useNavigate();
 
     return (
         <Box sx={{ textAlign: 'center' }}>
-            <Typography
+            <BaseTypography
                 variant="body2"
                 color="text.secondary"
-                sx={{
+                customSx={{
                     fontSize: { xs: '0.9rem', md: '1rem' },
                     lineHeight: 1.6,
                     mb: 2,
@@ -30,25 +27,18 @@ const LoginFooter: React.FC = () => {
                     Chính sách bảo mật
                 </Box>{' '}
                 của chúng tôi.
-            </Typography>
+            </BaseTypography>
 
-            <Button
-                variant="text"
-                startIcon={<ArrowBack />}
+            <BaseButton
+                text="Quay lại trang chủ"
                 onClick={() => navigate('/')}
-                sx={{
-                    color: 'text.secondary',
-                    textTransform: 'none',
-                    fontWeight: 600,
+                variant="text"
+                colorScheme="neutral"
+                startIcon={<ArrowBack />}
+                customSx={{
                     fontSize: { xs: '0.9rem', md: '1rem' },
-                    '&:hover': {
-                        background: 'rgba(102, 126, 234, 0.05)',
-                        color: 'primary.main',
-                    }
                 }}
-            >
-                Quay lại trang chủ
-            </Button>
+            />
         </Box>
     );
 };

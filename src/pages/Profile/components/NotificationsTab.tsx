@@ -15,7 +15,8 @@ const NotificationsTab: React.FC = () => {
                     label="Thông báo email khi có sticker mới"
                     sx={{
                         '& .MuiFormControlLabel-label': {
-                            fontWeight: 600
+                            fontWeight: 600,
+                            color: 'text.primary'
                         }
                     }}
                 />
@@ -24,7 +25,8 @@ const NotificationsTab: React.FC = () => {
                     label="Thông báo khi có cập nhật tính năng"
                     sx={{
                         '& .MuiFormControlLabel-label': {
-                            fontWeight: 600
+                            fontWeight: 600,
+                            color: 'text.primary'
                         }
                     }}
                 />
@@ -33,7 +35,8 @@ const NotificationsTab: React.FC = () => {
                     label="Thông báo marketing"
                     sx={{
                         '& .MuiFormControlLabel-label': {
-                            fontWeight: 600
+                            fontWeight: 600,
+                            color: 'text.primary'
                         }
                     }}
                 />
@@ -42,7 +45,8 @@ const NotificationsTab: React.FC = () => {
                     label="Thông báo bảo mật"
                     sx={{
                         '& .MuiFormControlLabel-label': {
-                            fontWeight: 600
+                            fontWeight: 600,
+                            color: 'text.primary'
                         }
                     }}
                 />

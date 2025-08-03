@@ -1,22 +1,73 @@
 import React from 'react';
-import {
-    Box,
-    Paper,
-    Typography,
-} from '@mui/material';
+import { Box } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
 import {
     PhotoCamera,
     Collections,
     TrendingUp,
     Star,
 } from '@mui/icons-material';
+import { useAppStore } from '../../../store/appStore';
+import StatCard from './atoms/StatCard';
 
 const StatsCards: React.FC = () => {
+    const navigate = useNavigate();
+    const { dashboardStats } = useAppStore();
+
+    const handleStatClick = (statType: string) => {
+        switch (statType) {
+            case 'created':
+                navigate('/gallery?filter=my-stickers');
+                break;
+            case 'collections':
+                navigate('/gallery?view=collections');
+                break;
+            case 'downloads':
+                // Open analytics modal or navigate to analytics page
+                console.log('Opening download analytics...');
+                break;
+            case 'rating':
+                // Open reviews modal or navigate to reviews page
+                console.log('Opening rating details...');
+                break;
+            default:
+                break;
+        }
+    };
+
     const stats = [
-        { icon: <PhotoCamera />, title: 'Sticker đã tạo', value: '12', color: '#667eea', bgColor: 'rgba(102, 126, 234, 0.1)' },
-        { icon: <Collections />, title: 'Bộ sưu tập', value: '3', color: '#f093fb', bgColor: 'rgba(240, 147, 251, 0.1)' },
-        { icon: <TrendingUp />, title: 'Lượt tải về', value: '89', color: '#4facfe', bgColor: 'rgba(79, 172, 254, 0.1)' },
-        { icon: <Star />, title: 'Điểm đánh giá', value: '4.8', color: '#fa709a', bgColor: 'rgba(250, 112, 154, 0.1)' },
+        {
+            id: 'created',
+            icon: <PhotoCamera sx={{ fontSize: 32, color: '#667eea' }} />,
+            title: 'Sticker đã tạo',
+            value: dashboardStats.totalStickers.toString(),
+            color: '#667eea',
+            bgColor: 'rgba(102, 126, 234, 0.1)'
+        },
+        {
+            id: 'collections',
+            icon: <Collections sx={{ fontSize: 32, color: '#f093fb' }} />,
+            title: 'Bộ sưu tập',
+            value: dashboardStats.totalCollections.toString(),
+            color: '#f093fb',
+            bgColor: 'rgba(240, 147, 251, 0.1)'
+        },
+        {
+            id: 'downloads',
+            icon: <TrendingUp sx={{ fontSize: 32, color: '#4facfe' }} />,
+            title: 'Lượt tải về',
+            value: dashboardStats.totalDownloads.toString(),
+            color: '#4facfe',
+            bgColor: 'rgba(79, 172, 254, 0.1)'
+        },
+        {
+            id: 'rating',
+            icon: <Star sx={{ fontSize: 32, color: '#fa709a' }} />,
+            title: 'Điểm đánh giá',
+            value: dashboardStats.averageRating.toString(),
+            color: '#fa709a',
+            bgColor: 'rgba(250, 112, 154, 0.1)'
+        },
     ];
 
     return (
@@ -31,44 +82,15 @@ const StatsCards: React.FC = () => {
             mb: 4
         }}>
             {stats.map((stat, index) => (
-                <Paper key={index} sx={{
-                    p: 3,
-                    borderRadius: '20px',
-                    background: 'rgba(255, 255, 255, 0.9)',
-                    backdropFilter: 'blur(10px)',
-                    border: '1px solid rgba(255, 255, 255, 0.2)',
-                    boxShadow: '0 8px 32px rgba(0, 0, 0, 0.1)',
-                    textAlign: 'center',
-                    transition: 'all 0.3s ease',
-                    '&:hover': {
-                        transform: 'translateY(-5px)',
-                        boxShadow: '0 20px 60px rgba(0, 0, 0, 0.15)',
-                    }
-                }}>
-                    <Box sx={{
-                        width: 60,
-                        height: 60,
-                        borderRadius: '16px',
-                        background: stat.bgColor,
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        mx: 'auto',
-                        mb: 2,
-                    }}>
-                        {React.cloneElement(stat.icon, { sx: { fontSize: 32, color: stat.color } })}
-                    </Box>
-                    <Typography variant="h4" sx={{
-                        fontWeight: 800,
-                        color: stat.color,
-                        mb: 0.5
-                    }}>
-                        {stat.value}
-                    </Typography>
-                    <Typography variant="body2" color="text.secondary" sx={{ fontWeight: 600 }}>
-                        {stat.title}
-                    </Typography>
-                </Paper>
+                <StatCard
+                    key={index}
+                    icon={stat.icon}
+                    title={stat.title}
+                    value={stat.value}
+                    color={stat.color}
+                    bgColor={stat.bgColor}
+                    onClick={() => handleStatClick(stat.id)}
+                />
             ))}
         </Box>
     );

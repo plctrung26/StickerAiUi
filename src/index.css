@@ -11,6 +11,12 @@
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+
+  /* Theme Settings CSS Variables */
+  --animation-duration: 0.3s;
+  --hover-transform: translateY(-2px);
+  --backdrop-filter: blur(10px);
+  --glass-bg-opacity: 0.9;
 }
 
 a {
@@ -60,6 +66,32 @@ button:hover {
 button:focus,
 button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
+}
+
+/* Theme Settings Utility Classes */
+.theme-animation {
+  transition-duration: var(--animation-duration) !important;
+}
+
+.theme-hover:hover {
+  transform: var(--hover-transform) !important;
+}
+
+.theme-glass {
+  backdrop-filter: var(--backdrop-filter) !important;
+}
+
+/* Animation keyframes */
+@keyframes pulse {
+
+  0%,
+  100% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0.7;
+  }
 }
 
 @media (prefers-color-scheme: light) {

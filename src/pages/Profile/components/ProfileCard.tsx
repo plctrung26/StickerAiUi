@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
     Paper,
     Box,
@@ -8,6 +8,8 @@ import {
     IconButton,
     Button,
     Card,
+    Tooltip,
+    Fade,
 } from '@mui/material';
 import { useAuthStore } from '../../../store/authStore';
 import {
@@ -16,9 +18,10 @@ import {
     Save,
     PhotoCamera as PhotoCameraIcon,
     BarChart,
-    AccountCircle,
     Settings,
+    StarRate,
 } from '@mui/icons-material';
+import ImageUploadModal from './ImageUploadModal';
 
 interface ProfileCardProps {
     editMode: boolean;
@@ -27,23 +30,50 @@ interface ProfileCardProps {
 
 const ProfileCard: React.FC<ProfileCardProps> = ({ editMode, onEditToggle }) => {
     const { user } = useAuthStore();
+    const [hoveredStat, setHoveredStat] = useState<number | null>(null);
+    const [imageUploadOpen, setImageUploadOpen] = useState(false);
+    const [profileImage, setProfileImage] = useState<string | undefined>(user?.profile_picture_url);
 
     const profileStats = [
-        { label: 'Sticker đã tạo', value: '12', icon: <PhotoCameraIcon />, color: '#667eea' },
-        { label: 'Lượt tải về', value: '89', icon: <BarChart />, color: '#f093fb' },
-        { label: 'Lượt thích', value: '45', icon: <AccountCircle />, color: '#4facfe' },
-        { label: 'Chia sẻ', value: '23', icon: <Settings />, color: '#fa709a' },
+        { label: 'Sticker đã tạo', value: '12', icon: <PhotoCameraIcon />, color: '#667eea', description: 'Tổng số sticker bạn đã tạo' },
+        { label: 'Lượt tải về', value: '89', icon: <BarChart />, color: '#f093fb', description: 'Số lượt người khác tải sticker của bạn' },
+        { label: 'Lượt thích', value: '45', icon: <StarRate />, color: '#4facfe', description: 'Số lượt thích từ cộng đồng' },
+        { label: 'Chia sẻ', value: '23', icon: <Settings />, color: '#fa709a', description: 'Số lần sticker được chia sẻ' },
     ];
+
+    const handleImageUpdate = (imageFile: File) => {
+        // Create a local URL for the uploaded image
+        const imageUrl = URL.createObjectURL(imageFile);
+        setProfileImage(imageUrl);
+
+        // TODO: Upload to server
+        console.log('Uploading image:', imageFile);
+
+        // Here you would typically upload to your server
+        // const formData = new FormData();
+        // formData.append('profile_image', imageFile);
+        // api.uploadProfileImage(formData);
+    };
+
+    const handleCameraClick = () => {
+        setImageUploadOpen(true);
+    };
 
     return (
         <Paper sx={{
             p: 4,
             mb: 4,
             borderRadius: '20px',
-            background: 'rgba(255, 255, 255, 0.9)',
+            background: (theme) => theme.palette.mode === 'dark'
+                ? 'rgba(22, 27, 34, 0.9)'
+                : 'rgba(255, 255, 255, 0.9)',
             backdropFilter: 'blur(10px)',
-            border: '1px solid rgba(255, 255, 255, 0.2)',
-            boxShadow: '0 8px 32px rgba(0, 0, 0, 0.1)',
+            border: (theme) => theme.palette.mode === 'dark'
+                ? '1px solid rgba(48, 54, 61, 0.3)'
+                : '1px solid rgba(255, 255, 255, 0.2)',
+            boxShadow: (theme) => theme.palette.mode === 'dark'
+                ? '0 8px 32px rgba(0, 0, 0, 0.3)'
+                : '0 8px 32px rgba(0, 0, 0, 0.1)',
         }}>
             <Box sx={{
                 display: 'flex',
@@ -54,7 +84,7 @@ const ProfileCard: React.FC<ProfileCardProps> = ({ editMode, onEditToggle }) => 
             }}>
                 <Box sx={{ position: 'relative' }}>
                     <Avatar
-                        src={user?.profile_picture_url}
+                        src={profileImage}
                         sx={{
                             width: { xs: 120, md: 150 },
                             height: { xs: 120, md: 150 },
@@ -64,6 +94,7 @@ const ProfileCard: React.FC<ProfileCardProps> = ({ editMode, onEditToggle }) => 
                         }}
                     />
                     <IconButton
+                        onClick={handleCameraClick}
                         sx={{
                             position: 'absolute',
                             bottom: 0,
@@ -72,9 +103,11 @@ const ProfileCard: React.FC<ProfileCardProps> = ({ editMode, onEditToggle }) => 
                             color: 'white',
                             '&:hover': {
                                 background: 'linear-gradient(135deg, #5a6fd8 0%, #6b4190 100%)',
+                                transform: 'scale(1.1)',
                             },
                             width: 40,
                             height: 40,
+                            transition: 'all 0.2s ease',
                         }}
                     >
                         <PhotoCamera sx={{ fontSize: 20 }} />
@@ -152,40 +185,109 @@ const ProfileCard: React.FC<ProfileCardProps> = ({ editMode, onEditToggle }) => 
                 gap: 2
             }}>
                 {profileStats.map((stat, index) => (
-                    <Card key={index} sx={{
-                        borderRadius: '16px',
-                        background: 'rgba(248, 250, 252, 0.8)',
-                        border: '1px solid rgba(0, 0, 0, 0.05)',
-                        textAlign: 'center',
-                        p: 2,
-                        transition: 'all 0.3s ease',
-                        '&:hover': {
-                            transform: 'translateY(-2px)',
-                            boxShadow: '0 8px 32px rgba(0, 0, 0, 0.1)',
-                        }
-                    }}>
-                        <Box sx={{
-                            width: 48,
-                            height: 48,
-                            borderRadius: '12px',
-                            background: `rgba(${stat.color === '#667eea' ? '102, 126, 234' : stat.color === '#f093fb' ? '240, 147, 251' : stat.color === '#4facfe' ? '79, 172, 254' : '250, 112, 154'}, 0.1)`,
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            mx: 'auto',
-                            mb: 1,
-                        }}>
-                            {React.cloneElement(stat.icon, { sx: { fontSize: 24, color: stat.color } })}
-                        </Box>
-                        <Typography variant="h5" sx={{ fontWeight: 800, color: stat.color, mb: 0.5 }}>
-                            {stat.value}
-                        </Typography>
-                        <Typography variant="body2" color="text.secondary" sx={{ fontWeight: 600, fontSize: '0.8rem' }}>
-                            {stat.label}
-                        </Typography>
-                    </Card>
+                    <Fade in timeout={300 + index * 100} key={index}>
+                        <Tooltip
+                            title={stat.description}
+                            arrow
+                            placement="top"
+                        >
+                            <Card
+                                sx={{
+                                    borderRadius: '16px',
+                                    background: hoveredStat === index
+                                        ? `linear-gradient(135deg, ${stat.color}10, ${stat.color}20)`
+                                        : (theme) => theme.palette.mode === 'dark'
+                                            ? 'rgba(22, 27, 34, 0.8)'
+                                            : 'rgba(248, 250, 252, 0.8)',
+                                    border: hoveredStat === index
+                                        ? `2px solid ${stat.color}40`
+                                        : (theme) => theme.palette.mode === 'dark'
+                                            ? '1px solid rgba(48, 54, 61, 0.3)'
+                                            : '1px solid rgba(0, 0, 0, 0.05)',
+                                    textAlign: 'center',
+                                    p: 2,
+                                    cursor: 'pointer',
+                                    transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
+                                    position: 'relative',
+                                    overflow: 'hidden',
+                                    '&:hover': {
+                                        transform: 'translateY(-4px) scale(1.05)',
+                                        boxShadow: `0 12px 40px ${stat.color}30`,
+                                    },
+                                    '&::before': hoveredStat === index ? {
+                                        content: '""',
+                                        position: 'absolute',
+                                        top: 0,
+                                        left: 0,
+                                        right: 0,
+                                        height: '3px',
+                                        background: `linear-gradient(90deg, ${stat.color}, ${stat.color}80)`,
+                                    } : {}
+                                }}
+                                onMouseEnter={() => setHoveredStat(index)}
+                                onMouseLeave={() => setHoveredStat(null)}
+                            >
+                                <Box sx={{
+                                    width: 48,
+                                    height: 48,
+                                    borderRadius: '12px',
+                                    background: `rgba(${stat.color === '#667eea' ? '102, 126, 234' :
+                                        stat.color === '#f093fb' ? '240, 147, 251' :
+                                            stat.color === '#4facfe' ? '79, 172, 254' :
+                                                '250, 112, 154'
+                                        }, ${hoveredStat === index ? '0.2' : '0.1'})`,
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    mx: 'auto',
+                                    mb: 1,
+                                    transition: 'all 0.3s ease',
+                                    transform: hoveredStat === index ? 'scale(1.1) rotate(5deg)' : 'scale(1)',
+                                }}>
+                                    {React.cloneElement(stat.icon, {
+                                        sx: {
+                                            fontSize: 24,
+                                            color: stat.color,
+                                            transition: 'all 0.3s ease'
+                                        }
+                                    })}
+                                </Box>
+                                <Typography
+                                    variant="h5"
+                                    sx={{
+                                        fontWeight: 800,
+                                        color: stat.color,
+                                        mb: 0.5,
+                                        transform: hoveredStat === index ? 'scale(1.1)' : 'scale(1)',
+                                        transition: 'all 0.3s ease'
+                                    }}
+                                >
+                                    {stat.value}
+                                </Typography>
+                                <Typography
+                                    variant="body2"
+                                    color="text.secondary"
+                                    sx={{
+                                        fontWeight: 600,
+                                        fontSize: '0.8rem',
+                                        opacity: hoveredStat === index ? 0.9 : 0.7,
+                                        transition: 'all 0.3s ease'
+                                    }}
+                                >
+                                    {stat.label}
+                                </Typography>
+                            </Card>
+                        </Tooltip>
+                    </Fade>
                 ))}
             </Box>
+
+            {/* Image Upload Modal */}
+            <ImageUploadModal
+                open={imageUploadOpen}
+                onClose={() => setImageUploadOpen(false)}
+                onImageUpdate={handleImageUpdate}
+            />
         </Paper>
     );
 };

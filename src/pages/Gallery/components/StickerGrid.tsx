@@ -36,10 +36,16 @@ const StickerGrid: React.FC<StickerGridProps> = ({ stickers }) => {
                 p: 6,
                 textAlign: 'center',
                 borderRadius: '20px',
-                background: 'rgba(255, 255, 255, 0.9)',
+                background: (theme) => theme.palette.mode === 'dark'
+                    ? 'rgba(22, 27, 34, 0.9)'
+                    : 'rgba(255, 255, 255, 0.9)',
                 backdropFilter: 'blur(10px)',
-                border: '1px solid rgba(255, 255, 255, 0.2)',
-                boxShadow: '0 8px 32px rgba(0, 0, 0, 0.1)',
+                border: (theme) => theme.palette.mode === 'dark'
+                    ? '1px solid rgba(48, 54, 61, 0.3)'
+                    : '1px solid rgba(255, 255, 255, 0.2)',
+                boxShadow: (theme) => theme.palette.mode === 'dark'
+                    ? '0 8px 32px rgba(0, 0, 0, 0.3)'
+                    : '0 8px 32px rgba(0, 0, 0, 0.1)',
             }}>
                 <Collections sx={{ fontSize: 64, color: '#64748b', mb: 2 }} />
                 <Typography variant="h5" sx={{ fontWeight: 700, mb: 1, color: '#64748b' }}>

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import {
     Container,
     Box,
@@ -14,40 +14,53 @@ import {
     IconButton,
 } from '@mui/material';
 import { Close } from '@mui/icons-material';
-import CreateHeader from './components/CreateHeader';
+import { useAppStore } from '../../store/appStore';
 import CharacterSelection from './components/CharacterSelection';
 import ImageUpload from './components/ImageUpload';
 import EmotionSelection from './components/EmotionSelection';
 import ResultsStep from './components/ResultsStep';
 
 const CreatePage: React.FC = () => {
-    const [activeStep, setActiveStep] = useState(0);
-    const [uploadedImages, setUploadedImages] = useState<File[]>([]);
-    const [selectedCharacter, setSelectedCharacter] = useState<string>('');
-    const [selectedEmotion, setSelectedEmotion] = useState<string>('');
-    const [prompt, setPrompt] = useState<string>('');
-    const [isGenerating, setIsGenerating] = useState(false);
-    const [generatedImages, setGeneratedImages] = useState<string[]>([]);
-    const [selectedGenerated, setSelectedGenerated] = useState<string>('');
-    const [previewOpen, setPreviewOpen] = useState(false);
+    const {
+        createStep,
+        uploadedImages,
+        selectedCharacterId,
+        selectedEmotionId,
+        textPrompt,
+        isGenerating,
+        generatedImages,
+        selectedGeneratedImage,
+        isPreviewOpen,
+        nextCreateStep,
+        prevCreateStep,
+        setIsGenerating,
+        setGeneratedImages,
+        setSelectedCharacterId,
+        setSelectedEmotionId,
+        setTextPrompt,
+        setUploadedImages,
+        setSelectedGeneratedImage,
+        closePreview,
+        resetCreateState
+    } = useAppStore();
 
     const steps = ['Chọn phong cách', 'Upload ảnh', 'Tạo sticker', 'Kết quả'];
 
     const handleNext = () => {
-        if (activeStep < steps.length - 1) {
-            setActiveStep(prev => prev + 1);
+        if (createStep < steps.length - 1) {
+            nextCreateStep();
         }
     };
 
     const handleBack = () => {
-        if (activeStep > 0) {
-            setActiveStep(prev => prev - 1);
+        if (createStep > 0) {
+            prevCreateStep();
         }
     };
 
     const handleGenerate = async () => {
         setIsGenerating(true);
-        setActiveStep(3);
+        nextCreateStep(); // Move to results step
 
         // Simulate API call
         setTimeout(() => {
@@ -63,32 +76,29 @@ const CreatePage: React.FC = () => {
     };
 
     const handleRestart = () => {
-        setActiveStep(0);
-        setSelectedCharacter('');
-        setSelectedEmotion('');
-        setUploadedImages([]);
-        setPrompt('');
-        setGeneratedImages([]);
-        setSelectedGenerated('');
+        resetCreateState();
     };
 
     const canProceed = () => {
-        switch (activeStep) {
+        switch (createStep) {
             case 0:
-                return selectedCharacter !== '';
+                return selectedCharacterId !== '';
             case 1:
-                return uploadedImages.length > 0 || prompt.trim() !== '';
+                return uploadedImages.length > 0 || textPrompt.trim() !== '';
             case 2:
-                return selectedEmotion !== '';
+                return selectedEmotionId !== '';
             default:
                 return true;
         }
     };
 
     return (
-        <Box sx={{ minHeight: '100vh', background: 'linear-gradient(180deg, #f8fafc 0%, #ffffff 100%)' }}>
-            <CreateHeader />
-
+        <Box sx={{
+            minHeight: '100vh',
+            background: (theme) => theme.palette.mode === 'dark'
+                ? 'linear-gradient(180deg, #0d1117 0%, #161b22 100%)'
+                : 'linear-gradient(180deg, #f8fafc 0%, #ffffff 100%)'
+        }}>
             <Container maxWidth="lg" sx={{ py: { xs: 3, md: 4 } }}>
                 {/* Header */}
                 <Box sx={{ mb: 4, textAlign: 'center' }}>
@@ -115,12 +125,18 @@ const CreatePage: React.FC = () => {
                     p: 3,
                     mb: 4,
                     borderRadius: '20px',
-                    background: 'rgba(255, 255, 255, 0.9)',
+                    background: (theme) => theme.palette.mode === 'dark'
+                        ? 'rgba(22, 27, 34, 0.9)'
+                        : 'rgba(255, 255, 255, 0.9)',
                     backdropFilter: 'blur(10px)',
-                    border: '1px solid rgba(255, 255, 255, 0.2)',
-                    boxShadow: '0 8px 32px rgba(0, 0, 0, 0.1)',
+                    border: (theme) => theme.palette.mode === 'dark'
+                        ? '1px solid rgba(48, 54, 61, 0.3)'
+                        : '1px solid rgba(255, 255, 255, 0.2)',
+                    boxShadow: (theme) => theme.palette.mode === 'dark'
+                        ? '0 8px 32px rgba(0, 0, 0, 0.3)'
+                        : '0 8px 32px rgba(0, 0, 0, 0.1)',
                 }}>
-                    <Stepper activeStep={activeStep} sx={{ mb: 2 }}>
+                    <Stepper activeStep={createStep} sx={{ mb: 2 }}>
                         {steps.map((label) => (
                             <Step key={label}>
                                 <StepLabel sx={{
@@ -148,47 +164,53 @@ const CreatePage: React.FC = () => {
                 <Paper sx={{
                     p: 4,
                     borderRadius: '20px',
-                    background: 'rgba(255, 255, 255, 0.9)',
+                    background: (theme) => theme.palette.mode === 'dark'
+                        ? 'rgba(22, 27, 34, 0.9)'
+                        : 'rgba(255, 255, 255, 0.9)',
                     backdropFilter: 'blur(10px)',
-                    border: '1px solid rgba(255, 255, 255, 0.2)',
-                    boxShadow: '0 8px 32px rgba(0, 0, 0, 0.1)',
+                    border: (theme) => theme.palette.mode === 'dark'
+                        ? '1px solid rgba(48, 54, 61, 0.3)'
+                        : '1px solid rgba(255, 255, 255, 0.2)',
+                    boxShadow: (theme) => theme.palette.mode === 'dark'
+                        ? '0 8px 32px rgba(0, 0, 0, 0.3)'
+                        : '0 8px 32px rgba(0, 0, 0, 0.1)',
                     minHeight: '500px',
                 }}>
-                    {activeStep === 0 && (
+                    {createStep === 0 && (
                         <CharacterSelection
-                            selectedCharacter={selectedCharacter}
-                            onCharacterSelect={setSelectedCharacter}
+                            selectedCharacter={selectedCharacterId}
+                            onCharacterSelect={setSelectedCharacterId}
                         />
                     )}
 
-                    {activeStep === 1 && (
+                    {createStep === 1 && (
                         <ImageUpload
                             uploadedImages={uploadedImages}
                             setUploadedImages={setUploadedImages}
-                            prompt={prompt}
-                            setPrompt={setPrompt}
+                            prompt={textPrompt}
+                            setPrompt={setTextPrompt}
                         />
                     )}
 
-                    {activeStep === 2 && (
+                    {createStep === 2 && (
                         <EmotionSelection
-                            selectedEmotion={selectedEmotion}
-                            onEmotionSelect={setSelectedEmotion}
+                            selectedEmotion={selectedEmotionId}
+                            onEmotionSelect={setSelectedEmotionId}
                         />
                     )}
 
-                    {activeStep === 3 && (
+                    {createStep === 3 && (
                         <ResultsStep
                             isGenerating={isGenerating}
                             generatedImages={generatedImages}
-                            selectedGenerated={selectedGenerated}
-                            onImageSelect={setSelectedGenerated}
+                            selectedGenerated={selectedGeneratedImage}
+                            onImageSelect={setSelectedGeneratedImage}
                             onRestart={handleRestart}
                         />
                     )}
 
                     {/* Navigation Buttons */}
-                    {activeStep < 3 && (
+                    {createStep < 3 && (
                         <Box sx={{
                             display: 'flex',
                             justifyContent: 'space-between',
@@ -199,13 +221,13 @@ const CreatePage: React.FC = () => {
                         }}>
                             <Button
                                 onClick={handleBack}
-                                disabled={activeStep === 0}
+                                disabled={createStep === 0}
                                 sx={{
                                     borderRadius: '12px',
                                     textTransform: 'none',
                                     fontWeight: 600,
                                     px: 4,
-                                    visibility: activeStep === 0 ? 'hidden' : 'visible'
+                                    visibility: createStep === 0 ? 'hidden' : 'visible'
                                 }}
                             >
                                 Quay lại
@@ -213,7 +235,7 @@ const CreatePage: React.FC = () => {
 
                             <Button
                                 variant="contained"
-                                onClick={activeStep === 2 ? handleGenerate : handleNext}
+                                onClick={createStep === 2 ? handleGenerate : handleNext}
                                 disabled={!canProceed()}
                                 sx={{
                                     borderRadius: '12px',
@@ -233,7 +255,7 @@ const CreatePage: React.FC = () => {
                                     }
                                 }}
                             >
-                                {activeStep === 2 ? 'Tạo sticker' : 'Tiếp tục'}
+                                {createStep === 2 ? 'Tạo sticker' : 'Tiếp tục'}
                             </Button>
                         </Box>
                     )}
@@ -242,8 +264,8 @@ const CreatePage: React.FC = () => {
 
             {/* Preview Dialog */}
             <Dialog
-                open={previewOpen}
-                onClose={() => setPreviewOpen(false)}
+                open={isPreviewOpen}
+                onClose={closePreview}
                 maxWidth="md"
                 fullWidth
                 PaperProps={{
@@ -262,15 +284,15 @@ const CreatePage: React.FC = () => {
                     <Typography variant="h6" sx={{ fontWeight: 700 }}>
                         Xem trước sticker
                     </Typography>
-                    <IconButton onClick={() => setPreviewOpen(false)}>
+                    <IconButton onClick={closePreview}>
                         <Close />
                     </IconButton>
                 </DialogTitle>
                 <DialogContent sx={{ p: 3 }}>
-                    {selectedGenerated && (
+                    {selectedGeneratedImage && (
                         <Box sx={{ textAlign: 'center' }}>
                             <img
-                                src={selectedGenerated}
+                                src={selectedGeneratedImage}
                                 alt="Preview"
                                 style={{
                                     maxWidth: '100%',

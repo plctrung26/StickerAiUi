@@ -12,7 +12,7 @@ import {
 
 interface ImageUploadProps {
     uploadedImages: File[];
-    setUploadedImages: React.Dispatch<React.SetStateAction<File[]>>;
+    setUploadedImages: (images: File[]) => void;
     prompt: string;
     setPrompt: (prompt: string) => void;
 }
@@ -28,12 +28,14 @@ const ImageUpload: React.FC<ImageUploadProps> = ({
     const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
         const files = Array.from(event.target.files || []);
         if (files.length > 0) {
-            setUploadedImages(prev => [...prev, ...files].slice(0, 5)); // Limit to 5 images
+            const newImages = [...uploadedImages, ...files].slice(0, 5);
+            setUploadedImages(newImages);
         }
     };
 
     const removeImage = (index: number) => {
-        setUploadedImages(prev => prev.filter((_, i) => i !== index));
+        const newImages = uploadedImages.filter((_, i) => i !== index);
+        setUploadedImages(newImages);
     };
 
     return (
@@ -50,16 +52,22 @@ const ImageUpload: React.FC<ImageUploadProps> = ({
                 <Box
                     onClick={() => fileInputRef.current?.click()}
                     sx={{
-                        border: '2px dashed #cbd5e1',
+                        border: (theme) => theme.palette.mode === 'dark'
+                            ? '2px dashed #30363d'
+                            : '2px dashed #cbd5e1',
                         borderRadius: '16px',
                         p: 4,
                         textAlign: 'center',
                         cursor: 'pointer',
                         transition: 'all 0.3s ease',
-                        background: 'rgba(248, 250, 252, 0.5)',
+                        background: (theme) => theme.palette.mode === 'dark'
+                            ? 'rgba(22, 27, 34, 0.5)'
+                            : 'rgba(248, 250, 252, 0.5)',
                         '&:hover': {
                             borderColor: '#667eea',
-                            background: 'rgba(102, 126, 234, 0.05)',
+                            background: (theme) => theme.palette.mode === 'dark'
+                                ? 'rgba(88, 166, 255, 0.1)'
+                                : 'rgba(102, 126, 234, 0.05)',
                         }
                     }}
                 >
@@ -140,7 +148,9 @@ const ImageUpload: React.FC<ImageUploadProps> = ({
                     sx={{
                         '& .MuiOutlinedInput-root': {
                             borderRadius: '16px',
-                            background: 'rgba(248, 250, 252, 0.8)',
+                            background: (theme) => theme.palette.mode === 'dark'
+                                ? 'rgba(22, 27, 34, 0.8)'
+                                : 'rgba(248, 250, 252, 0.8)',
                         }
                     }}
                 />

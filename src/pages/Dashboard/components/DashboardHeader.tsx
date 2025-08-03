@@ -3,112 +3,81 @@ import {
     AppBar,
     Toolbar,
     Box,
-    Typography,
-    IconButton,
-    Badge,
-    Avatar,
-    Button,
 } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { useAuthStore } from '../../../store/authStore';
-import {
-    AutoAwesome,
-    NotificationsNone,
-    Settings,
-    Logout,
-} from '@mui/icons-material';
+import { useAppStore } from '../../../store/appStore';
+import AppLogo from './atoms/AppLogo';
+import AppTitle from './atoms/AppTitle';
+import NotificationBell from './atoms/NotificationBell';
+import SettingsButton from './atoms/SettingsButton';
+import UserAvatar from './atoms/UserAvatar';
+import LogoutButton from './atoms/LogoutButton';
+import NotificationModal from './modals/NotificationModal';
+import SettingsModal from './modals/SettingsModal';
 
 const DashboardHeader: React.FC = () => {
     const navigate = useNavigate();
     const { user, clearAuth } = useAuthStore();
+    const {
+        isNotificationModalOpen,
+        isSettingsModalOpen,
+        openNotificationModal,
+        closeNotificationModal,
+        openSettingsModal,
+        closeSettingsModal
+    } = useAppStore();
 
     const handleLogout = () => {
         clearAuth();
         navigate('/');
     };
 
-    return (
-        <AppBar position="static" elevation={0} sx={{
-            background: 'rgba(255, 255, 255, 0.95)',
-            backdropFilter: 'blur(20px)',
-            borderBottom: '1px solid rgba(0, 0, 0, 0.05)',
-            boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)',
-        }}>
-            <Toolbar sx={{ px: { xs: 2, md: 4 }, py: 1 }}>
-                <Box sx={{ display: 'flex', alignItems: 'center', flexGrow: 1 }}>
-                    <Box sx={{
-                        width: 40,
-                        height: 40,
-                        borderRadius: '12px',
-                        background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        mr: 2
-                    }}>
-                        <AutoAwesome sx={{ color: 'white', fontSize: 24 }} />
-                    </Box>
-                    <Typography
-                        variant="h6"
-                        component="div"
-                        sx={{
-                            fontSize: { xs: '1.4rem', md: '1.6rem' },
-                            fontWeight: 800,
-                            background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-                            WebkitBackgroundClip: 'text',
-                            WebkitTextFillColor: 'transparent',
-                            backgroundClip: 'text',
-                        }}
-                    >
-                        Dashboard
-                    </Typography>
-                </Box>
+    const handleNotificationClick = () => {
+        openNotificationModal();
+    };
 
-                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                    <IconButton sx={{ color: '#64748b' }}>
-                        <Badge badgeContent={3} color="error">
-                            <NotificationsNone />
-                        </Badge>
-                    </IconButton>
-                    <IconButton sx={{ color: '#64748b' }}>
-                        <Settings />
-                    </IconButton>
-                    <Avatar
-                        src={user?.profile_picture_url}
-                        sx={{
-                            width: 40,
-                            height: 40,
-                            border: '2px solid',
-                            borderColor: 'primary.main',
-                            cursor: 'pointer'
-                        }}
-                        onClick={() => navigate('/profile')}
-                    />
-                    <Button
-                        variant="outlined"
-                        size="small"
-                        startIcon={<Logout />}
-                        onClick={handleLogout}
-                        sx={{
-                            ml: 1,
-                            borderRadius: '12px',
-                            textTransform: 'none',
-                            borderColor: '#e2e8f0',
-                            color: '#475569',
-                            fontWeight: 600,
-                            px: 2,
-                            '&:hover': {
-                                borderColor: '#ef4444',
-                                background: 'rgba(239, 68, 68, 0.05)',
-                                color: '#ef4444',
-                            }
-                        }}
-                    >
-                        Đăng xuất
-                    </Button>
-                </Box>
-            </Toolbar>
-        </AppBar>
+    const handleSettingsClick = () => {
+        openSettingsModal();
+    };
+
+    return (
+        <>
+            <AppBar position="static" elevation={0} sx={{
+                background: 'rgba(255, 255, 255, 0.95)',
+                backdropFilter: 'blur(20px)',
+                borderBottom: '1px solid rgba(0, 0, 0, 0.05)',
+                boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)',
+            }}>
+                <Toolbar sx={{ px: { xs: 2, md: 4 }, py: 1 }}>
+                    <Box sx={{ display: 'flex', alignItems: 'center', flexGrow: 1 }}>
+                        <AppLogo />
+                        <AppTitle title="Dashboard" />
+                    </Box>
+
+                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                        <NotificationBell
+                            onClick={handleNotificationClick}
+                        />
+                        <SettingsButton onClick={handleSettingsClick} />
+                        <UserAvatar
+                            profilePictureUrl={user?.profile_picture_url}
+                            onClick={() => navigate('/profile')}
+                        />
+                        <LogoutButton onClick={handleLogout} />
+                    </Box>
+                </Toolbar>
+            </AppBar>
+
+            <NotificationModal
+                open={isNotificationModalOpen}
+                onClose={closeNotificationModal}
+            />
+            <SettingsModal
+                open={isSettingsModalOpen}
+                onClose={closeSettingsModal}
+            />
+        </>
     );
 };
 

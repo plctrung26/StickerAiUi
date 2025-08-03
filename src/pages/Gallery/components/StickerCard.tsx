@@ -37,15 +37,23 @@ const StickerCard: React.FC<StickerCardProps> = ({ sticker }) => {
     return (
         <Card sx={{
             borderRadius: '20px',
-            background: 'rgba(255, 255, 255, 0.9)',
+            background: (theme) => theme.palette.mode === 'dark'
+                ? 'rgba(22, 27, 34, 0.9)'
+                : 'rgba(255, 255, 255, 0.9)',
             backdropFilter: 'blur(10px)',
-            border: '1px solid rgba(255, 255, 255, 0.2)',
-            boxShadow: '0 8px 32px rgba(0, 0, 0, 0.1)',
+            border: (theme) => theme.palette.mode === 'dark'
+                ? '1px solid rgba(48, 54, 61, 0.3)'
+                : '1px solid rgba(255, 255, 255, 0.2)',
+            boxShadow: (theme) => theme.palette.mode === 'dark'
+                ? '0 8px 32px rgba(0, 0, 0, 0.3)'
+                : '0 8px 32px rgba(0, 0, 0, 0.1)',
             transition: 'all 0.3s ease',
             overflow: 'hidden',
             '&:hover': {
                 transform: 'translateY(-8px)',
-                boxShadow: '0 20px 60px rgba(0, 0, 0, 0.15)',
+                boxShadow: (theme) => theme.palette.mode === 'dark'
+                    ? '0 20px 60px rgba(0, 0, 0, 0.4)'
+                    : '0 20px 60px rgba(0, 0, 0, 0.15)',
             }
         }}>
             <CardMedia

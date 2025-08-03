@@ -183,12 +183,17 @@ const ImageUploadModal: React.FC<ImageUploadModalProps> = ({
                 sx: {
                     borderRadius: '20px',
                     background: (theme) => theme.palette.mode === 'dark'
-                        ? 'rgba(22, 27, 34, 0.95)'
-                        : 'rgba(255, 255, 255, 0.95)',
-                    backdropFilter: 'blur(20px)',
+                        ? '#161b22'
+                        : '#ffffff',
                     border: (theme) => theme.palette.mode === 'dark'
                         ? '1px solid rgba(48, 54, 61, 0.3)'
                         : '1px solid rgba(255, 255, 255, 0.2)',
+                }
+            }}
+            sx={{
+                '& .MuiBackdrop-root': {
+                    backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                    backdropFilter: 'blur(8px)',
                 }
             }}
         >
@@ -415,7 +420,7 @@ const ImageUploadModal: React.FC<ImageUploadModalProps> = ({
                                                     background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
                                                     '&:hover': {
                                                         background: 'linear-gradient(135deg, #5a6fd8 0%, #6b4190 100%)',
-                                                        transform: 'scale(1.1)',
+                                                        transform: 'scale(1.05)', // Reduced scale to minimize layout impact
                                                     },
                                                     transition: 'all 0.2s ease',
                                                 }}

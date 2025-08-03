@@ -44,6 +44,7 @@ const BaseButton: React.FC<BaseButtonProps> = ({
                     boxShadow: variant === 'contained'
                         ? '0 4px 12px rgba(102, 126, 234, 0.3)'
                         : 'none',
+                    mb: variant === 'contained' ? 0.25 : 0, // Add margin for contained buttons
                     '&:hover': {
                         boxShadow: variant === 'contained'
                             ? '0 6px 16px rgba(102, 126, 234, 0.4)'
@@ -53,6 +54,7 @@ const BaseButton: React.FC<BaseButtonProps> = ({
                             ? 'rgba(102, 126, 234, 0.05)'
                             : undefined,
                         borderColor: '#667eea',
+                        mb: variant === 'contained' ? '2px' : 0, // Compensate for translateY
                     }
                 };
             case 'danger':

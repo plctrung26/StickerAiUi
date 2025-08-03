@@ -40,11 +40,13 @@ const StatCard: React.FC<StatCardProps> = ({
                 textAlign: 'center',
                 transition: 'all 0.3s ease',
                 cursor: onClick ? 'pointer' : 'default',
+                mb: 1, // Add margin to prevent layout shift
                 '&:hover': {
                     transform: 'translateY(-5px)',
                     boxShadow: (theme) => theme.palette.mode === 'dark'
                         ? '0 20px 60px rgba(0, 0, 0, 0.4)'
                         : '0 20px 60px rgba(0, 0, 0, 0.15)',
+                    mb: '9px', // Compensate for translateY movement
                 }
             }}>
             <StatIcon

@@ -10,13 +10,30 @@ import { Add } from '@mui/icons-material';
 interface FloatingActionButtonProps {
     filterAnchor: HTMLElement | null;
     onFilterClose: () => void;
+    gallerySortBy: 'date' | 'downloads' | 'likes';
+    setGallerySortBy: (sortBy: 'date' | 'downloads' | 'likes') => void;
 }
 
 const FloatingActionButton: React.FC<FloatingActionButtonProps> = ({
     filterAnchor,
     onFilterClose,
+    gallerySortBy,
+    setGallerySortBy,
 }) => {
     const navigate = useNavigate();
+
+    const handleSortChange = (sortBy: 'date' | 'downloads' | 'likes') => {
+        setGallerySortBy(sortBy);
+        onFilterClose();
+    };
+
+    const getSortLabel = (sortBy: 'date' | 'downloads' | 'likes') => {
+        switch (sortBy) {
+            case 'date': return 'Sắp xếp theo ngày';
+            case 'downloads': return 'Sắp xếp theo lượt tải';
+            case 'likes': return 'Sắp xếp theo lượt thích';
+        }
+    };
 
     return (
         <>
@@ -30,7 +47,7 @@ const FloatingActionButton: React.FC<FloatingActionButtonProps> = ({
                     boxShadow: '0 8px 32px rgba(102, 126, 234, 0.3)',
                     '&:hover': {
                         boxShadow: '0 12px 48px rgba(102, 126, 234, 0.4)',
-                        transform: 'scale(1.05)',
+                        transform: 'scale(1.02)', // Reduced scale to minimize layout impact
                     }
                 }}
                 onClick={() => navigate('/create')}
@@ -51,15 +68,19 @@ const FloatingActionButton: React.FC<FloatingActionButtonProps> = ({
                     }
                 }}
             >
-                <MenuItem onClick={onFilterClose} sx={{ fontWeight: 600, color: '#64748b' }}>
-                    Sắp xếp theo ngày
-                </MenuItem>
-                <MenuItem onClick={onFilterClose} sx={{ fontWeight: 600, color: '#64748b' }}>
-                    Sắp xếp theo lượt tải
-                </MenuItem>
-                <MenuItem onClick={onFilterClose} sx={{ fontWeight: 600, color: '#64748b' }}>
-                    Sắp xếp theo lượt thích
-                </MenuItem>
+                {(['date', 'downloads', 'likes'] as const).map((sortOption) => (
+                    <MenuItem
+                        key={sortOption}
+                        onClick={() => handleSortChange(sortOption)}
+                        sx={{
+                            fontWeight: gallerySortBy === sortOption ? 700 : 600,
+                            color: gallerySortBy === sortOption ? '#667eea' : '#64748b',
+                            backgroundColor: gallerySortBy === sortOption ? 'rgba(102, 126, 234, 0.05)' : 'transparent'
+                        }}
+                    >
+                        {getSortLabel(sortOption)}
+                    </MenuItem>
+                ))}
             </Menu>
         </>
     );

@@ -60,7 +60,19 @@ interface AppState {
     gallerySearchQuery: string;
     galleryViewMode: 'grid' | 'list';
     gallerySelectedCategory: string;
+    gallerySortBy: 'date' | 'downloads' | 'likes';
     galleryFilterAnchor: HTMLElement | null;
+
+    // Gallery interactions state
+    isPreviewModalOpen: boolean;
+    previewedSticker: Sticker | null;
+    likedStickers: string[]; // Array of sticker IDs that are liked
+    bookmarkedStickers: string[]; // Array of sticker IDs that are bookmarked
+    isShareModalOpen: boolean;
+    sharedSticker: Sticker | null;
+    isMoreMenuOpen: boolean;
+    moreMenuAnchor: HTMLElement | null;
+    moreMenuSticker: Sticker | null;
 
     // Profile page state
     profileCurrentTab: number;
@@ -68,6 +80,12 @@ interface AppState {
     profileFormData: {
         fullName: string;
         email: string;
+        bio: string;
+        location: string;
+        website: string;
+        phoneNumber: string;
+        dateOfBirth: string;
+        occupation: string;
     };
 
     // Login page state
@@ -140,8 +158,22 @@ interface AppActions {
     setGallerySearchQuery: (query: string) => void;
     setGalleryViewMode: (mode: 'grid' | 'list') => void;
     setGallerySelectedCategory: (category: string) => void;
+    setGallerySortBy: (sortBy: 'date' | 'downloads' | 'likes') => void;
     setGalleryFilterAnchor: (anchor: HTMLElement | null) => void;
     resetGalleryState: () => void;
+
+    // Gallery interactions actions
+    openPreviewModal: (sticker: Sticker) => void;
+    closePreviewModal: () => void;
+    toggleStickerLike: (stickerId: string) => void;
+    toggleStickerBookmark: (stickerId: string) => void;
+    downloadSticker: (sticker: Sticker) => void;
+    openShareModal: (sticker: Sticker) => void;
+    closeShareModal: () => void;
+    shareSticker: (sticker: Sticker, platform: string) => void;
+    openMoreMenu: (sticker: Sticker, anchor: HTMLElement) => void;
+    closeMoreMenu: () => void;
+    reportSticker: (stickerId: string, reason: string) => void;
 
     // Profile page actions
     setProfileCurrentTab: (tab: number) => void;
@@ -244,7 +276,19 @@ export const useAppStore = create<AppState & AppActions>((set) => ({
     gallerySearchQuery: '',
     galleryViewMode: 'grid',
     gallerySelectedCategory: 'all',
+    gallerySortBy: 'date',
     galleryFilterAnchor: null,
+
+    // Gallery interactions initial state
+    isPreviewModalOpen: false,
+    previewedSticker: null,
+    likedStickers: [],
+    bookmarkedStickers: [],
+    isShareModalOpen: false,
+    sharedSticker: null,
+    isMoreMenuOpen: false,
+    moreMenuAnchor: null,
+    moreMenuSticker: null,
 
     // Profile page initial state
     profileCurrentTab: 0,
@@ -252,6 +296,12 @@ export const useAppStore = create<AppState & AppActions>((set) => ({
     profileFormData: {
         fullName: '',
         email: '',
+        bio: '',
+        location: '',
+        website: '',
+        phoneNumber: '',
+        dateOfBirth: '',
+        occupation: '',
     },
 
     // Login page initial state
@@ -384,13 +434,131 @@ export const useAppStore = create<AppState & AppActions>((set) => ({
     setGallerySearchQuery: (query: string) => set({ gallerySearchQuery: query }),
     setGalleryViewMode: (mode: 'grid' | 'list') => set({ galleryViewMode: mode }),
     setGallerySelectedCategory: (category: string) => set({ gallerySelectedCategory: category }),
+    setGallerySortBy: (sortBy: 'date' | 'downloads' | 'likes') => set({ gallerySortBy: sortBy }),
     setGalleryFilterAnchor: (anchor: HTMLElement | null) => set({ galleryFilterAnchor: anchor }),
     resetGalleryState: () => set({
         gallerySearchQuery: '',
         galleryViewMode: 'grid',
         gallerySelectedCategory: 'all',
+        gallerySortBy: 'date',
         galleryFilterAnchor: null,
     }),
+
+    // Gallery interactions actions
+    openPreviewModal: (sticker: Sticker) => set({
+        isPreviewModalOpen: true,
+        previewedSticker: sticker
+    }),
+    closePreviewModal: () => set({
+        isPreviewModalOpen: false,
+        previewedSticker: null
+    }),
+    toggleStickerLike: (stickerId: string) => set((state) => ({
+        likedStickers: state.likedStickers.includes(stickerId)
+            ? state.likedStickers.filter(id => id !== stickerId)
+            : [...state.likedStickers, stickerId]
+    })),
+    downloadSticker: (sticker: Sticker) => {
+        // Create download link and trigger download
+        const link = document.createElement('a');
+        link.href = sticker.file_url;
+        link.download = `sticker_${sticker.id}.png`;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+
+        // Add download notification
+        set((state) => ({
+            notifications: [
+                {
+                    id: Date.now().toString(),
+                    title: 'Tải xuống thành công',
+                    message: `Sticker đã được tải về`,
+                    type: 'success' as const,
+                    time: 'vừa xong',
+                    isRead: false
+                },
+                ...state.notifications
+            ]
+        }));
+    },
+    openShareModal: (sticker: Sticker) => set({
+        isShareModalOpen: true,
+        sharedSticker: sticker
+    }),
+    closeShareModal: () => set({
+        isShareModalOpen: false,
+        sharedSticker: null
+    }),
+    shareSticker: (sticker: Sticker, platform: string) => {
+        const url = encodeURIComponent(window.location.origin + '/gallery/' + sticker.id);
+        const text = encodeURIComponent(`Xem sticker tuyệt vời này!`);
+
+        let shareUrl = '';
+        switch (platform) {
+            case 'facebook':
+                shareUrl = `https://www.facebook.com/sharer/sharer.php?u=${url}`;
+                break;
+            case 'twitter':
+                shareUrl = `https://twitter.com/intent/tweet?url=${url}&text=${text}`;
+                break;
+            case 'telegram':
+                shareUrl = `https://t.me/share/url?url=${url}&text=${text}`;
+                break;
+            case 'copy':
+                navigator.clipboard.writeText(window.location.origin + '/gallery/' + sticker.id);
+                set((state) => ({
+                    notifications: [
+                        {
+                            id: Date.now().toString(),
+                            title: 'Đã sao chép liên kết',
+                            message: 'Liên kết sticker đã được sao chép vào clipboard',
+                            type: 'success' as const,
+                            time: 'vừa xong',
+                            isRead: false
+                        },
+                        ...state.notifications
+                    ]
+                }));
+                return;
+        }
+
+        if (shareUrl) {
+            window.open(shareUrl, '_blank', 'width=600,height=400');
+        }
+    },
+    openMoreMenu: (sticker: Sticker, anchor: HTMLElement) => set({
+        isMoreMenuOpen: true,
+        moreMenuSticker: sticker,
+        moreMenuAnchor: anchor
+    }),
+    closeMoreMenu: () => set({
+        isMoreMenuOpen: false,
+        moreMenuSticker: null,
+        moreMenuAnchor: null
+    }),
+    toggleStickerBookmark: (stickerId: string) => set((state) => ({
+        bookmarkedStickers: state.bookmarkedStickers.includes(stickerId)
+            ? state.bookmarkedStickers.filter(id => id !== stickerId)
+            : [...state.bookmarkedStickers, stickerId]
+    })),
+    reportSticker: (stickerId: string, reason: string) => {
+        // In a real app, this would send to an API
+        console.log(`Reported sticker ${stickerId} for: ${reason}`);
+        set((state) => ({
+            notifications: [
+                {
+                    id: Date.now().toString(),
+                    title: 'Báo cáo đã được gửi',
+                    message: 'Cảm ơn bạn đã báo cáo. Chúng tôi sẽ xem xét trong thời gian sớm nhất.',
+                    type: 'info' as const,
+                    time: 'vừa xong',
+                    isRead: false
+                },
+                ...state.notifications
+            ]
+        }));
+    },
 
     // Profile page actions
     setProfileCurrentTab: (tab: number) => set({ profileCurrentTab: tab }),
@@ -404,6 +572,12 @@ export const useAppStore = create<AppState & AppActions>((set) => ({
         profileFormData: {
             fullName: '',
             email: '',
+            bio: '',
+            location: '',
+            website: '',
+            phoneNumber: '',
+            dateOfBirth: '',
+            occupation: '',
         },
     }),
 

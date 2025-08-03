@@ -25,9 +25,10 @@ interface StickerItem {
 
 interface StickerGridProps {
     stickers: StickerItem[];
+    viewMode: 'grid' | 'list';
 }
 
-const StickerGrid: React.FC<StickerGridProps> = ({ stickers }) => {
+const StickerGrid: React.FC<StickerGridProps> = ({ stickers, viewMode }) => {
     const navigate = useNavigate();
 
     if (stickers.length === 0) {
@@ -79,19 +80,20 @@ const StickerGrid: React.FC<StickerGridProps> = ({ stickers }) => {
 
     return (
         <Box sx={{
-            display: 'grid',
-            gridTemplateColumns: {
+            display: viewMode === 'list' ? 'flex' : 'grid',
+            flexDirection: viewMode === 'list' ? 'column' : undefined,
+            gridTemplateColumns: viewMode === 'grid' ? {
                 xs: 'repeat(1, 1fr)',
                 sm: 'repeat(2, 1fr)',
                 md: 'repeat(3, 1fr)',
                 lg: 'repeat(4, 1fr)',
                 xl: 'repeat(5, 1fr)'
-            },
-            gap: 3,
+            } : undefined,
+            gap: viewMode === 'grid' ? 3 : 2,
             mb: 4
         }}>
             {stickers.map((sticker) => (
-                <StickerCard key={sticker.id} sticker={sticker} />
+                <StickerCard key={sticker.id} sticker={sticker} viewMode={viewMode} />
             ))}
         </Box>
     );

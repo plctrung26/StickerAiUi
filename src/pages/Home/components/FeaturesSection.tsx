@@ -177,7 +177,8 @@ const FeaturesSection: React.FC = () => {
                     sm: 'repeat(2, 1fr)',
                     lg: 'repeat(3, 1fr)'
                 },
-                gap: 4
+                gap: 4,
+                p: 1 // Add padding to accommodate scale and translateY effects
             }}>
                 {features.map((feature, index) => (
                     <Card
@@ -198,6 +199,7 @@ const FeaturesSection: React.FC = () => {
                                 : '0 8px 32px rgba(0, 0, 0, 0.1)',
                             transition: 'all 0.3s ease',
                             cursor: 'pointer',
+                            mb: 1, // Add margin to prevent layout shift
                             '&:hover': {
                                 transform: 'translateY(-8px) scale(1.02)',
                                 boxShadow: (theme) => theme.palette.mode === 'dark'
@@ -207,6 +209,7 @@ const FeaturesSection: React.FC = () => {
                                 background: (theme) => theme.palette.mode === 'dark'
                                     ? 'rgba(33, 38, 45, 0.85)'
                                     : 'rgba(255, 255, 255, 0.85)',
+                                mb: '12px', // Compensate for translateY movement
                             }
                         }}
                     >

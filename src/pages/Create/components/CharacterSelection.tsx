@@ -87,7 +87,8 @@ const CharacterSelection: React.FC<CharacterSelectionProps> = ({
             <Box sx={{
                 display: 'grid',
                 gridTemplateColumns: { xs: '1fr', sm: 'repeat(2, 1fr)', lg: 'repeat(4, 1fr)' },
-                gap: 3
+                gap: 3,
+                p: 1 // Add padding to accommodate scale effects
             }}>
                 {characters.map((character, index) => (
                     <Fade in timeout={300 + index * 100} key={character.id}>

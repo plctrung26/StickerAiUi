@@ -62,6 +62,15 @@ const NotificationModal: React.FC<NotificationModalProps> = ({ open, onClose }) 
                 sx: {
                     borderRadius: '20px',
                     maxHeight: '70vh',
+                    background: (theme) => theme.palette.mode === 'dark'
+                        ? '#161b22'
+                        : '#ffffff',
+                }
+            }}
+            sx={{
+                '& .MuiBackdrop-root': {
+                    backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                    backdropFilter: 'blur(8px)',
                 }
             }}
         >

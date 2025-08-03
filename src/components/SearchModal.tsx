@@ -108,13 +108,18 @@ const SearchModal: React.FC<SearchModalProps> = ({ open, onClose }) => {
                     background: (theme) => theme.palette.mode === 'dark'
                         ? 'linear-gradient(135deg, #161b22 0%, #21262d 100%)'
                         : 'linear-gradient(135deg, #ffffff 0%, #f8fafc 100%)',
-                    backdropFilter: 'blur(10px)',
                     border: (theme) => theme.palette.mode === 'dark'
                         ? '1px solid #30363d'
                         : '1px solid rgba(0, 0, 0, 0.1)',
                     boxShadow: (theme) => theme.palette.mode === 'dark'
                         ? '0 20px 60px rgba(0, 0, 0, 0.4)'
                         : '0 20px 60px rgba(0, 0, 0, 0.15)',
+                }
+            }}
+            sx={{
+                '& .MuiBackdrop-root': {
+                    backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                    backdropFilter: 'blur(8px)',
                 }
             }}
         >

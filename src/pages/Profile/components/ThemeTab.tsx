@@ -97,11 +97,13 @@ const ThemeTab: React.FC = () => {
                         ? '1px solid rgba(48, 54, 61, 0.3)'
                         : '1px solid rgba(0, 0, 0, 0.05)',
                     transition: 'all 0.3s ease',
+                    mb: animationsEnabled ? 0.5 : 0, // Add margin when animations enabled
                     '&:hover': {
                         transform: animationsEnabled ? 'translateY(-2px)' : 'none',
                         boxShadow: (theme) => theme.palette.mode === 'dark'
                             ? '0 8px 32px rgba(0, 0, 0, 0.3)'
                             : '0 8px 32px rgba(0, 0, 0, 0.1)',
+                        mb: animationsEnabled ? '6px' : 0, // Compensate for translateY movement
                     }
                 }}>
                     <CardContent sx={{ p: 3 }}>
@@ -172,11 +174,13 @@ const ThemeTab: React.FC = () => {
                         ? '1px solid rgba(48, 54, 61, 0.3)'
                         : '1px solid rgba(0, 0, 0, 0.05)',
                     transition: 'all 0.3s ease',
+                    mb: animationsEnabled ? 0.5 : 0, // Add margin when animations enabled
                     '&:hover': {
                         transform: animationsEnabled ? 'translateY(-2px)' : 'none',
                         boxShadow: (theme) => theme.palette.mode === 'dark'
                             ? '0 8px 32px rgba(0, 0, 0, 0.3)'
                             : '0 8px 32px rgba(0, 0, 0, 0.1)',
+                        mb: animationsEnabled ? '6px' : 0, // Compensate for translateY movement
                     }
                 }}>
                     <CardContent sx={{ p: 3 }}>
@@ -250,11 +254,13 @@ const ThemeTab: React.FC = () => {
                         : '1px solid rgba(0, 0, 0, 0.05)',
                     backdropFilter: blurEffectsEnabled ? 'blur(10px)' : 'none',
                     transition: 'all 0.3s ease',
+                    mb: animationsEnabled ? 0.5 : 0, // Add margin when animations enabled
                     '&:hover': {
                         transform: animationsEnabled ? 'translateY(-2px)' : 'none',
                         boxShadow: (theme) => theme.palette.mode === 'dark'
                             ? '0 8px 32px rgba(0, 0, 0, 0.3)'
                             : '0 8px 32px rgba(0, 0, 0, 0.1)',
+                        mb: animationsEnabled ? '6px' : 0, // Compensate for translateY movement
                     }
                 }}>
                     <CardContent sx={{ p: 3 }}>

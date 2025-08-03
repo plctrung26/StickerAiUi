@@ -8,6 +8,9 @@ import { useAppStore } from '../../store/appStore';
 import SearchAndFilters from './components/SearchAndFilters';
 import StickerGrid from './components/StickerGrid';
 import FloatingActionButton from './components/FloatingActionButton';
+import StickerPreviewModal from './components/StickerPreviewModal';
+import StickerShareModal from './components/StickerShareModal';
+import StickerMoreMenuModal from './components/StickerMoreMenuModal';
 
 interface StickerItem {
     id: string;
@@ -26,10 +29,12 @@ const GalleryPage: React.FC = () => {
         galleryViewMode,
         galleryFilterAnchor,
         gallerySelectedCategory,
+        gallerySortBy,
         setGallerySearchQuery,
         setGalleryViewMode,
         setGalleryFilterAnchor,
-        setGallerySelectedCategory
+        setGallerySelectedCategory,
+        setGallerySortBy
     } = useAppStore();
 
     // Mock data - replace with actual API call
@@ -98,11 +103,23 @@ const GalleryPage: React.FC = () => {
 
     const categories = ['all', 'Animals', 'Tech', 'Emoji', 'Nature', 'Space'];
 
-    const filteredStickers = stickerData.filter(sticker => {
-        const matchesSearch = sticker.title.toLowerCase().includes(gallerySearchQuery.toLowerCase());
-        const matchesCategory = gallerySelectedCategory === 'all' || sticker.category === gallerySelectedCategory;
-        return matchesSearch && matchesCategory;
-    });
+    const filteredStickers = stickerData
+        .filter(sticker => {
+            const matchesSearch = sticker.title.toLowerCase().includes(gallerySearchQuery.toLowerCase());
+            const matchesCategory = gallerySelectedCategory === 'all' || sticker.category === gallerySelectedCategory;
+            return matchesSearch && matchesCategory;
+        })
+        .sort((a, b) => {
+            switch (gallerySortBy) {
+                case 'downloads':
+                    return b.downloads - a.downloads;
+                case 'likes':
+                    return b.likes - a.likes;
+                case 'date':
+                default:
+                    return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+            }
+        });
 
     const handleFilterClick = (event: React.MouseEvent<HTMLElement>) => {
         setGalleryFilterAnchor(event.currentTarget);
@@ -151,13 +168,20 @@ const GalleryPage: React.FC = () => {
                     categories={categories}
                 />
 
-                <StickerGrid stickers={filteredStickers} />
+                <StickerGrid stickers={filteredStickers} viewMode={galleryViewMode} />
             </Container>
 
             <FloatingActionButton
                 filterAnchor={galleryFilterAnchor}
                 onFilterClose={handleFilterClose}
+                gallerySortBy={gallerySortBy}
+                setGallerySortBy={setGallerySortBy}
             />
+
+            {/* Modals */}
+            <StickerPreviewModal />
+            <StickerShareModal />
+            <StickerMoreMenuModal />
         </Box>
     );
 };

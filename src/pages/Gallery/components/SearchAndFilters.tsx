@@ -112,6 +112,8 @@ const SearchAndFilters: React.FC<SearchFiltersProps> = ({
             boxShadow: (theme) => theme.palette.mode === 'dark'
                 ? '0 8px 32px rgba(0, 0, 0, 0.3)'
                 : '0 8px 32px rgba(0, 0, 0, 0.1)',
+            position: 'relative',
+            zIndex: 5,
         }}>
             <Box sx={{
                 display: 'flex',
@@ -119,7 +121,7 @@ const SearchAndFilters: React.FC<SearchFiltersProps> = ({
                 gap: 2,
                 alignItems: { xs: 'stretch', md: 'center' }
             }}>
-                <Box sx={{ position: 'relative', flexGrow: 1 }}>
+                <Box sx={{ position: 'relative', flexGrow: 1, zIndex: 10 }}>
                     <TextField
                         fullWidth
                         placeholder="Tìm kiếm sticker..."
@@ -181,9 +183,15 @@ const SearchAndFilters: React.FC<SearchFiltersProps> = ({
                                     mt: 1,
                                     borderRadius: 2,
                                     boxShadow: '0 8px 32px rgba(0, 0, 0, 0.15)',
-                                    background: 'white',
-                                    zIndex: 1000,
+                                    background: (theme) => theme.palette.mode === 'dark'
+                                        ? 'rgba(22, 27, 34, 0.95)'
+                                        : 'rgba(255, 255, 255, 0.95)',
+                                    backdropFilter: 'blur(10px)',
+                                    zIndex: 9999,
                                     overflow: 'hidden',
+                                    border: (theme) => theme.palette.mode === 'dark'
+                                        ? '1px solid rgba(48, 54, 61, 0.3)'
+                                        : '1px solid rgba(0, 0, 0, 0.1)',
                                 }}
                             >
                                 {searchQuery.length === 0 && (

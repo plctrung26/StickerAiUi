@@ -103,7 +103,7 @@ const ProfileCard: React.FC<ProfileCardProps> = ({ editMode, onEditToggle }) => 
                             color: 'white',
                             '&:hover': {
                                 background: 'linear-gradient(135deg, #5a6fd8 0%, #6b4190 100%)',
-                                transform: 'scale(1.1)',
+                                transform: 'scale(1.05)', // Reduced scale to minimize layout impact
                             },
                             width: 40,
                             height: 40,
@@ -182,7 +182,8 @@ const ProfileCard: React.FC<ProfileCardProps> = ({ editMode, onEditToggle }) => 
             <Box sx={{
                 display: 'grid',
                 gridTemplateColumns: { xs: 'repeat(2, 1fr)', md: 'repeat(4, 1fr)' },
-                gap: 2
+                gap: 2,
+                p: 1 // Add padding to accommodate scale effects
             }}>
                 {profileStats.map((stat, index) => (
                     <Fade in timeout={300 + index * 100} key={index}>
@@ -210,9 +211,11 @@ const ProfileCard: React.FC<ProfileCardProps> = ({ editMode, onEditToggle }) => 
                                     transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
                                     position: 'relative',
                                     overflow: 'hidden',
+                                    mb: 1, // Add margin to prevent layout shift
                                     '&:hover': {
                                         transform: 'translateY(-4px) scale(1.05)',
                                         boxShadow: `0 12px 40px ${stat.color}30`,
+                                        mb: '8px', // Compensate for translateY movement
                                     },
                                     '&::before': hoveredStat === index ? {
                                         content: '""',
@@ -242,7 +245,7 @@ const ProfileCard: React.FC<ProfileCardProps> = ({ editMode, onEditToggle }) => 
                                     mx: 'auto',
                                     mb: 1,
                                     transition: 'all 0.3s ease',
-                                    transform: hoveredStat === index ? 'scale(1.1) rotate(5deg)' : 'scale(1)',
+                                    transform: hoveredStat === index ? 'scale(1.05) rotate(3deg)' : 'scale(1)', // Reduced scale and rotation
                                 }}>
                                     {React.cloneElement(stat.icon, {
                                         sx: {
@@ -258,7 +261,7 @@ const ProfileCard: React.FC<ProfileCardProps> = ({ editMode, onEditToggle }) => 
                                         fontWeight: 800,
                                         color: stat.color,
                                         mb: 0.5,
-                                        transform: hoveredStat === index ? 'scale(1.1)' : 'scale(1)',
+                                        transform: hoveredStat === index ? 'scale(1.05)' : 'scale(1)', // Reduced scale
                                         transition: 'all 0.3s ease'
                                     }}
                                 >

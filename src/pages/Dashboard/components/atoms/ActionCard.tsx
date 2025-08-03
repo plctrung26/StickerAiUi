@@ -34,11 +34,13 @@ const ActionCard: React.FC<ActionCardProps> = ({
                 : '0 8px 32px rgba(0, 0, 0, 0.1)',
             transition: 'all 0.3s ease',
             cursor: 'pointer',
+            mb: 1, // Add margin to prevent layout shift
             '&:hover': {
                 transform: 'translateY(-8px)',
                 boxShadow: (theme) => theme.palette.mode === 'dark'
                     ? '0 20px 60px rgba(0, 0, 0, 0.4)'
                     : '0 20px 60px rgba(0, 0, 0, 0.15)',
+                mb: '12px', // Compensate for translateY movement
             }
         }} onClick={onClick}>
             <CardContent sx={{ p: 3, textAlign: 'center' }}>

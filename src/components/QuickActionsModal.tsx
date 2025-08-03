@@ -52,6 +52,12 @@ const QuickActionsModal: React.FC<QuickActionsModalProps> = ({ open, onClose }) 
             onClose={onClose}
             maxWidth="sm"
             fullWidth
+            sx={{
+                '& .MuiBackdrop-root': {
+                    backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                    backdropFilter: 'blur(8px)',
+                }
+            }}
             PaperProps={{
                 sx: {
                     borderRadius: 3,
